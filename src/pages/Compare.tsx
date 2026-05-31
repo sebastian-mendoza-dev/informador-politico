@@ -1,123 +1,106 @@
-import { useState, useMemo } from 'react';
-import { candidates } from '../data/database';
-import { AlertTriangle, Scale } from 'lucide-react';
+import { useState } from 'react';
+import { candidatos, Candidato, Temas } from '../data/database';
 
 export default function Compare() {
-  const [candidateA, setCandidateA] = useState('');
-  const [candidateB, setCandidateB] = useState('');
-  const [selectedTheme, setSelectedTheme] = useState('');
+  const [candidateA, setCandidateA] = useState<string>(candidatos[0]?.candidato || '');
+  const [candidateB, setCandidateB] = useState<string>(candidatos[1]?.candidato || '');
+  const [selectedTheme, setSelectedTheme] = useState<keyof Temas>('educacion');
 
-  const themes = useMemo(() => {
-    const list = new Set<string>();
-    candidates.forEach(c => c.proposals.forEach(p => list.add(p.theme)));
-    return Array.from(list).sort();
-  }, []);
+  // Obtener la lista de todos los temas disponibles de manera dinámica
+  const listaTemas: (keyof Temas)[] = [
+    'educacion', 'salud', 'seguridad', 'economia', 'empleo', 
+    'infraestructura', 'medio_ambiente', 'tecnologia', 'vivienda', 'corrupcion'
+  ];
 
-  const proposalA = useMemo(() => {
-    const cand = candidates.find(c => c.id === candidateA);
-    return cand ? cand.proposals.find(p => p.theme === selectedTheme) : null;
-  }, [candidateA, selectedTheme]);
+  const candAData = candidatos.find((c: Candidato) => c.candidato === candidateA);
+  const candBData = candidatos.find((c: Candidato) => c.candidato === candidateB);
 
-  const proposalB = useMemo(() => {
-    const cand = candidates.find(c => c.id === candidateB);
-    return cand ? cand.proposals.find(p => p.theme === selectedTheme) : null;
-  }, [candidateB, selectedTheme]);
+  const propuestaA = candAData?.temas[selectedTheme];
+  const propuestaB = candBData?.temas[selectedTheme];
 
   return (
-    <div className="space-y-8 max-w-5xl mx-auto">
-      <div className="text-center max-w-xl mx-auto space-y-2">
-        <h1 className="text-xl sm:text-2xl font-bold text-white flex items-center justify-center gap-2">
-          <Scale className="w-5 h-5 text-slate-400" /> Comparador de Propuestas
-        </h1>
-        <p className="text-xs sm:text-sm text-slate-400">
-          Visualización paralela y neutral de programas oficiales. No se generan clasificaciones ni juicios de valor.
-        </p>
-      </div>
-
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 glass-card p-4 rounded-xl">
-        <select
-          className="w-full bg-[#0f172a] border border-white/10 text-white p-3 rounded-lg text-sm focus:outline-none focus:border-white/20"
-          value={candidateA}
-          onChange={(e) => setCandidateA(e.target.value)}
+    <div className="p-6 bg-slate-900 min-h-screen text-slate-100">
+      <h1 className="text-2xl font-bold mb-6 text-center text-indigo-400">Comparador de Propuestas</h1>
+      
+      {/* Selector de Tema */}
+      <div className="mb-6 max-w-xs mx-auto">
+        <label className="block text-sm font-medium mb-2">Selecciona un Eje Temático:</label>
+        <select 
+          value={selectedTheme} 
+          onChange={(e) => setSelectedTheme(e.target.value as keyof Temas)}
+          className="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-lg text-white font-medium capitalize"
         >
-          <option value="">Seleccionar Candidato A</option>
-          {candidates.map(c => <option key={c.id} value={c.id} disabled={c.id === candidateB}>{c.name}</option>)}
-        </select>
-
-        <select
-          className="w-full bg-[#0f172a] border border-white/10 text-white p-3 rounded-lg text-sm focus:outline-none focus:border-white/20"
-          value={selectedTheme}
-          onChange={(e) => setSelectedTheme(e.target.value)}
-        >
-          <option value="">Seleccionar Eje Temático</option>
-          {themes.map(t => <option key={t} value={t}>{t}</option>)}
-        </select>
-
-        <select
-          className="w-full bg-[#0f172a] border border-white/10 text-white p-3 rounded-lg text-sm focus:outline-none focus:border-white/20"
-          value={candidateB}
-          onChange={(e) => setCandidateB(e.target.value)}
-        >
-          <option value="">Seleccionar Candidato B</option>
-          {candidates.map(c => <option key={c.id} value={c.id} disabled={c.id === candidateA}>{c.name}</option>)}
+          {listaTemas.map((tema) => (
+            <option key={tema} value={tema}>{tema.replace('_', ' ')}</option>
+          ))}
         </select>
       </div>
 
-      {candidateA && candidateB && selectedTheme ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Columna Candidato A */}
-          <div className="glass-card rounded-xl p-6 flex flex-col justify-between min-h-[250px]">
-            <div>
-              <div className="border-b border-white/5 pb-3 mb-4">
-                <h2 className="text-lg font-bold text-white">{candidates.find(c => c.id === candidateA)?.name}</h2>
-                <p className="text-xs text-slate-400">{candidates.find(c => c.id === candidateA)?.party}</p>
-              </div>
-              {proposalA ? (
-                <>
-                  <h3 className="text-sm font-semibold text-slate-200 mb-2">{proposalA.summary}</h3>
-                  <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">{proposalA.content}</p>
-                </>
-              ) : (
-                <p className="text-xs text-slate-500 italic py-4">No se registra propuesta explícita en esta temática dentro de su plan de gobierno.</p>
-              )}
-            </div>
-            {proposalA?.inferida && (
-              <div className="flex items-start gap-2 text-[11px] text-amber-400 bg-amber-500/5 p-2 rounded border border-amber-500/10 mt-4">
-                <AlertTriangle className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" />
-                <span>⚠️ Inferencia basada en interpretación del documento original.</span>
-              </div>
-            )}
-          </div>
+      {/* Selectores de Candidatos */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div>
+          <label className="block text-sm font-medium mb-2">Candidato A:</label>
+          <select 
+            value={candidateA} 
+            onChange={(e) => setCandidateA(e.target.value)}
+            className="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-lg text-white"
+          >
+            {candidatos.map((c: Candidato) => (
+              <option key={c.candidato} value={c.candidato} disabled={c.candidato === candidateB}>{c.candidato}</option>
+            ))}
+          </select>
+        </div>
 
-          {/* Columna Candidato B */}
-          <div className="glass-card rounded-xl p-6 flex flex-col justify-between min-h-[250px]">
-            <div>
-              <div className="border-b border-white/5 pb-3 mb-4">
-                <h2 className="text-lg font-bold text-white">{candidates.find(c => c.id === candidateB)?.name}</h2>
-                <p className="text-xs text-slate-400">{candidates.find(c => c.id === candidateB)?.party}</p>
+        <div>
+          <label className="block text-sm font-medium mb-2">Candidato B:</label>
+          <select 
+            value={candidateB} 
+            onChange={(e) => setCandidateB(e.target.value)}
+            className="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-lg text-white"
+          >
+            {candidatos.map((c: Candidato) => (
+              <option key={c.candidato} value={c.candidato} disabled={c.candidato === candidateA}>{c.candidato}</option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      {/* Resultados de la Comparación */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Tarjeta Candidato A */}
+        <div className="bg-slate-800 p-6 rounded-xl border border-slate-700">
+          <h2 className="text-xl font-bold text-indigo-400">{candAData?.candidato}</h2>
+          <p className="text-xs text-slate-400 mb-4">{candAData?.partido}</p>
+          <div className="space-y-4">
+            <p className="italic text-slate-300 bg-slate-900/50 p-3 rounded-lg border-l-2 border-indigo-500">
+              "{propuestaA?.resumen || 'Sin propuestas o resumen específico para este tema.'}"
+            </p>
+            {propuestaA?.propuestas.map((p, idx) => (
+              <div key={idx} className="p-3 bg-slate-700/30 rounded-lg text-sm border border-slate-700">
+                <p className="text-slate-200 font-medium mb-1">{p.texto}</p>
+                <span className="text-[10px] text-slate-400">Pág. {p.pagina}</span>
               </div>
-              {proposalB ? (
-                <>
-                  <h3 className="text-sm font-semibold text-slate-200 mb-2">{proposalB.summary}</h3>
-                  <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">{proposalB.content}</p>
-                </>
-              ) : (
-                <p className="text-xs text-slate-500 italic py-4">No se registra propuesta explícita en esta temática dentro de su plan de gobierno.</p>
-              )}
-            </div>
-            {proposalB?.inferida && (
-              <div className="flex items-start gap-2 text-[11px] text-amber-400 bg-amber-500/5 p-2 rounded border border-amber-500/10 mt-4">
-                <AlertTriangle className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" />
-                <span>⚠️ Inferencia basada en interpretación del documento original.</span>
-              </div>
-            )}
+            ))}
           </div>
         </div>
-      ) : (
-        <div className="text-center py-16 glass-card rounded-xl">
-          <p className="text-sm text-slate-400">Define los dos candidatos y la temática en los selectores de arriba para habilitar el contraste de información.</p>
+
+        {/* Tarjeta Candidato B */}
+        <div className="bg-slate-800 p-6 rounded-xl border border-slate-700">
+          <h2 className="text-xl font-bold text-emerald-400">{candBData?.candidato}</h2>
+          <p className="text-xs text-slate-400 mb-4">{candBData?.partido}</p>
+          <div className="space-y-4">
+            <p className="italic text-slate-300 bg-slate-900/50 p-3 rounded-lg border-l-2 border-emerald-500">
+              "{propuestaB?.resumen || 'Sin propuestas o resumen específico para este tema.'}"
+            </p>
+            {propuestaB?.propuestas.map((p, idx) => (
+              <div key={idx} className="p-3 bg-slate-700/30 rounded-lg text-sm border border-slate-700">
+                <p className="text-slate-200 font-medium mb-1">{p.texto}</p>
+                <span className="text-[10px] text-slate-400">Pág. {p.pagina}</span>
+              </div>
+            ))}
+          </div>
         </div>
-      )}
+      </div>
     </div>
   );
 }

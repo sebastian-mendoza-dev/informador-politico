@@ -1,5 +1,6 @@
+import Home from './pages/Home'; // O './components/Home' según donde esté tu página principal
+import Compare from './pages/Compare';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
-git branch -M main
 import { Scale, Search } from 'lucide-react';
 
 export default function App() {
