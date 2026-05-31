@@ -19,13 +19,27 @@ export default function Home() {
         <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 mb-4">
           Informador Político
         </h1>
-        <p className="text-slate-400 text-base md:text-lg max-w-2xl mx-auto">
-          Consulta, busca y compara de forma transparente las propuestas y planes de gobierno oficiales para las Elecciones 2026.
+        <p className="text-slate-400 text-sm md:text-base max-w-2xl mx-auto">
+          Plataforma independiente y neutral de consulta ciudadana. Información basada estrictamente en documentos públicos oficiales.
         </p>
       </header>
 
-      {/* BARRA DE BÚSQUEDA */}
       <main className="w-full max-w-3xl flex-1">
+        
+        {/* TARJETA EXPLICATIVA DEL PROYECTO */}
+        <div className="w-full bg-slate-800/60 border border-slate-700/50 p-6 rounded-2xl mb-8 shadow-xl backdrop-blur-sm">
+          <h2 className="text-xl font-bold text-indigo-400 mb-3 flex items-center gap-2">
+            🤔 ¿Qué es Informador Político?
+          </h2>
+          <p className="text-sm text-slate-300 leading-relaxed mb-4">
+            <strong className="text-white">Informador Político</strong> es una plataforma experimental e independiente que recopila y organiza propuestas de programas de gobierno de forma neutral y transparente. Nuestro objetivo es facilitar el acceso a la información pública para que cualquier ciudadano pueda consultar, buscar y comparar propuestas directamente desde las fuentes oficiales.
+          </p>
+          <p className="text-sm text-slate-300 leading-relaxed">
+            Actualmente, esta plataforma se encuentra en fase beta. A futuro, buscamos evolucionar hacia una herramienta de seguimiento ciudadano que permita contrastar las propuestas presentadas durante las campañas con los avances reales de los planes de desarrollo y compromisos de gobierno. Información del pueblo, para el pueblo.
+          </p>
+        </div>
+
+        {/* BARRA DE BÚSQUEDA */}
         <form onSubmit={handleSearch} className="mb-12">
           <div className="relative flex items-center">
             <input
