@@ -1,6 +1,5 @@
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
-import Home from './pages/Home';
-import Compare from './pages/Compare';
+git branch -M main
 import { Scale, Search } from 'lucide-react';
 
 export default function App() {
