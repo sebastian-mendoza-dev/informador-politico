@@ -24,8 +24,8 @@ const listaTemas: (keyof Temas)[] = [
 
 const flatData: SearchResult[] = candidatos.flatMap((c: Candidato) => 
   listaTemas.flatMap((tema) => {
-    const infoTema = c.temas[tema];
-    if (!infoTema) return [];
+    const infoTema = c.temas?.[tema]; // El signo "?" evita que se rompa si el tema no existe
+    if (!infoTema || !infoTema.propuestas) return [];
     
     return infoTema.propuestas.map((p) => ({
       candidato: c.candidato,

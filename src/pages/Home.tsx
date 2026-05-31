@@ -1,14 +1,35 @@
 import { useState } from 'react';
+import { candidatos, Candidato } from '../data/database';
 import { searchProposals, SearchResult } from '../utils/searchEngine';
 
 export default function Home() {
   const [query, setQuery] = useState('');
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
+  
+  // Estado para controlar qué candidatos están seleccionados en el filtro
+  // Inicialmente todos están seleccionados (true)
+  const [selectedCandidates, setSelectedCandidates] = useState<Record<string, boolean>>(
+    candidatos.reduce((acc, c) => ({ ...acc, [c.candidato]: true }), {})
+  );
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    const results = searchProposals(query);
-    setSearchResults(results);
+    
+    // 1. Obtenemos todos los resultados del motor de búsqueda
+    const allResults = searchProposals(query);
+    
+    // 2. Filtramos los resultados para mostrar solo los de los candidatos seleccionados
+    const filtered = allResults.filter(result => selectedCandidates[result.candidato]);
+    
+    setSearchResults(filtered);
+  };
+
+  // Alternar el estado de selección de un candidato en el filtro
+  const toggleCandidate = (nombre: string) => {
+    setSelectedCandidates(prev => ({
+      ...prev,
+      [nombre]: !prev[nombre]
+    }));
   };
 
   return (
@@ -37,6 +58,33 @@ export default function Home() {
           <p className="text-sm text-slate-300 leading-relaxed">
             Actualmente, esta plataforma se encuentra en fase beta. A futuro, buscamos evolucionar hacia una herramienta de seguimiento ciudadano que permita contrastar las propuestas presentadas durante las campañas con los avances reales de los planes de desarrollo y compromisos de gobierno. Información del pueblo, para el pueblo.
           </p>
+        </div>
+
+        {/* NUEVA SECCIÓN: FILTRO PERSONALIZADO DE CANDIDATOS */}
+        <div className="w-full bg-slate-800/40 border border-slate-700/40 p-5 rounded-2xl mb-6">
+          <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">
+            🎯 Selecciona qué candidatos quieres incluir en la búsqueda:
+          </label>
+          <div className="flex flex-wrap gap-3">
+            {candidatos.map((c: Candidato) => (
+              <button
+                key={c.candidato}
+                type="button"
+                onClick={() => toggleCandidate(c.candidato)}
+                className={`px-4 py-2 rounded-xl text-xs font-bold border transition-all flex items-center gap-2 ${
+                  selectedCandidates[c.candidato]
+                    ? 'bg-indigo-600/20 border-indigo-500 text-indigo-300'
+                    : 'bg-slate-800 border-slate-700 text-slate-500 hover:border-slate-600'
+                }`}
+              >
+                <span className={`w-2 h-2 rounded-full ${selectedCandidates[c.candidato] ? 'bg-indigo-400' : 'bg-slate-600'}`} />
+                <div>
+                  <span className="block text-left text-slate-200">{c.candidato}</span>
+                  <span className="block text-[10px] font-normal opacity-60 text-left">{c.partido}</span>
+                </div>
+              </button>
+            ))}
+          </div>
         </div>
 
         {/* BARRA DE BÚSQUEDA */}
@@ -90,7 +138,7 @@ export default function Home() {
           ) : (
             query.trim() !== '' && (
               <div className="text-center py-12 bg-slate-800/30 rounded-2xl border border-dashed border-slate-700 text-slate-400">
-                🔍 No se encontraron propuestas que coincidan exactamente con tu búsqueda. Prueba con palabras clave más simples.
+                🔍 No se encontraron propuestas para los candidatos seleccionados. Intenta cambiar los filtros o usar palabras clave más simples.
               </div>
             )
           )}
