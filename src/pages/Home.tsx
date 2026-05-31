@@ -7,7 +7,7 @@ export default function Home() {
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [hasSearched, setHasSearched] = useState(false);
   
-  // Filtro de candidatos dinámico
+  // Estado para controlar qué candidatos están activos en la búsqueda
   const [selectedCandidates, setSelectedCandidates] = useState<Record<string, boolean>>(
     candidatos.reduce((acc, c) => ({ ...acc, [c.candidato]: true }), {})
   );
@@ -25,136 +25,146 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-850 flex flex-col items-center justify-start px-4 md:px-6 py-8 selection:bg-slate-200">
+    <div className="min-h-screen bg-slate-50 text-slate-850 flex flex-col items-center justify-start px-3 sm:px-6 py-4 md:py-8 selection:bg-slate-200 antialiased">
       
-      {/* BARRA SUPERIOR DE ALERTA NEUTRAL */}
-      <div className="w-full max-w-4xl bg-slate-900 text-slate-100 px-4 py-2 rounded-xl text-xs md:text-sm text-center font-medium mb-8 shadow-sm">
-        ⚖️ Espacio de pedagogía electoral independiente. Sin afiliación política ni pauta gubernamental.
+      {/* CINTA SUPERIOR: RESPONSIVA Y DISCRETA */}
+      <div className="w-full max-w-4xl bg-slate-900 text-slate-100 px-3 py-2 rounded-xl text-center text-xs font-medium mb-6 shadow-sm leading-tight">
+        ⚖️ Espacio de pedagogía electoral independiente para la Segunda Vuelta Presidencial. Sin afiliación política.
       </div>
 
       {/* ENCABEZADO INSTITUCIONAL */}
-      <header className="w-full max-w-3xl text-center mb-10">
-        <h1 className="text-3xl md:text-4xl font-semibold tracking-tight text-slate-900 mb-3">
+      <header className="w-full max-w-3xl text-center mb-8 px-2">
+        <h1 className="text-2xl sm:text-4xl font-bold tracking-tight text-slate-900 mb-2">
           Informador Político Colombia
         </h1>
-        <p className="text-slate-500 text-sm md:text-base max-w-xl mx-auto leading-relaxed">
-          Acceso estructurado a los programas de gobierno oficiales para las elecciones presidenciales.
+        <p className="text-slate-500 text-xs sm:text-sm md:text-base max-w-xl mx-auto leading-relaxed">
+          Consulta y contrasta los programas de gobierno oficiales radicados ante la Registraduría.
         </p>
       </header>
 
-      <main className="w-full max-w-3xl flex-1 flex flex-col gap-6">
+      <main className="w-full max-w-3xl flex-1 flex flex-col gap-5 sm:gap-6">
         
-        {/* PANEL DE TRANSPARENCIA Y POLÍTICA EDITORIAL */}
-        <section className="w-full bg-white border border-slate-200 p-6 rounded-2xl shadow-sm">
-          <h2 className="text-base font-bold text-slate-900 mb-3 flex items-center gap-2 border-b border-slate-150 pb-2">
-            📋 Protocolo de Transparencia y Propósito
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs md:text-sm text-slate-600 leading-relaxed">
-            <div>
-              <p className="mb-2">
-                <strong className="text-slate-800">Propósito y Visión:</strong> Esta plataforma nace con el objetivo de democratizar el acceso a la información electoral, permitiendo a los ciudadanos buscar palabras clave e intereses directamente sobre los textos oficiales, promoviendo un voto informado basado en datos y no en narrativas de redes sociales.
-              </p>
-              <p>
-                <strong className="text-slate-800">Uso de Inteligencia Artificial:</strong> El procesamiento, la extracción de citas textuales y la indexación de temas se realizan mediante modelos avanzados de IA bajo un riguroso marco de pruebas diseñado para mitigar sesgos y evitar la polarización del contenido.
-              </p>
-            </div>
-            <div>
-              <p className="mb-2">
-                <strong className="text-slate-800">Fuentes Oficiales:</strong> Toda la información contenida proviene exclusivamente de los planes de gobierno radicados formalmente por las campañas ante la Registraduría Nacional del Estado Civil. 
-              </p>
-              <p className="bg-amber-50 text-amber-900 p-2.5 rounded-xl border border-amber-200 font-medium">
-                ⚠️ <strong className="text-amber-950">Invitación al Ciudadano:</strong> A pesar de los estrictos controles de veracidad digital, instamos a cada usuario a descargar y leer directamente los planes de gobierno completos para contrastar la información de primera mano.
-              </p>
-            </div>
+        {/* NUEVA SECCIÓN DEFECTO: TARJETÓN SEGUNDA VUELTA (CARA A CARA) */}
+        <section className="w-full bg-white border border-slate-200 rounded-2xl shadow-sm p-4 sm:p-5">
+          <div className="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
+            <h2 className="text-xs sm:text-sm font-bold text-slate-900 uppercase tracking-wider flex items-center gap-1.5">
+              ⚡ Decisión Final: Segunda Vuelta
+            </h2>
+            <span className="bg-indigo-50 text-indigo-700 text-[10px] font-bold px-2 py-0.5 rounded-md">
+              Junio 2026
+            </span>
           </div>
-          <div className="mt-4 pt-3 border-t border-slate-150 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-400 gap-2">
-            <span>Desarrollado y administrado de forma independiente por: <strong>Sebastian Mendoza</strong></span>
-            <span className="font-mono bg-slate-100 text-slate-600 px-2 py-0.5 rounded">Versión Beta 2.0 (Segunda Vuelta)</span>
+
+          {/* CUADRICULA RESPONSIVA: 1 COLUMNA EN MÓVIL, 2 EN ESCRITORIO */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {candidatos.slice(0, 2).map((c: Candidato) => {
+              const isActive = selectedCandidates[c.candidato];
+              return (
+                <div 
+                  key={c.candidato}
+                  onClick={() => toggleCandidate(c.candidato)}
+                  className={`p-4 rounded-xl border transition-all cursor-pointer flex flex-col justify-between relative overflow-hidden group ${
+                    isActive 
+                      ? 'bg-slate-900 border-slate-900 text-white shadow-sm' 
+                      : 'bg-slate-50 border-slate-200 text-slate-400 hover:border-slate-300'
+                  }`}
+                >
+                  <div className="flex justify-between items-start gap-2 mb-2">
+                    <span className={`text-[9px] font-extrabold uppercase tracking-widest ${isActive ? 'text-slate-400' : 'text-slate-500'}`}>
+                      {c.partido}
+                    </span>
+                    <div className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center text-[8px] ${isActive ? 'border-white bg-white text-slate-900' : 'border-slate-300'}`}>
+                      {isActive && '✓'}
+                    </div>
+                  </div>
+                  <h3 className="text-base font-bold tracking-tight truncate">{c.candidato}</h3>
+                  <p className={`text-[10px] mt-1 italic ${isActive ? 'text-slate-300' : 'text-slate-400'}`}>
+                    {isActive ? '✓ Incluido en tu motor de búsqueda' : '✕ Excluido de la búsqueda'}
+                  </p>
+                </div>
+              );
+            })}
           </div>
+          <p className="text-[11px] text-slate-400 text-center mt-3">
+            💡 Toca el tarjetón de cualquier candidato para activarlo o desactivarlo de los resultados.
+          </p>
         </section>
 
-        {/* FILTRO DE CANDIDATOS */}
-        <section className="w-full bg-white border border-slate-200 p-5 rounded-2xl shadow-sm">
-          <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">
-            Filtro de indexación por candidato:
-          </label>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-            {candidatos.map((c: Candidato) => (
-              <button
-                key={c.candidato}
-                type="button"
-                onClick={() => toggleCandidate(c.candidato)}
-                className={`p-3 rounded-xl border text-xs font-medium transition-all text-left flex flex-col justify-between ${
-                  selectedCandidates[c.candidato]
-                    ? 'bg-slate-900 border-slate-900 text-white shadow-sm'
-                    : 'bg-white border-slate-200 text-slate-400 hover:border-slate-300'
-                }`}
-              >
-                <span className={`text-[10px] uppercase font-bold tracking-wide mb-1 ${selectedCandidates[c.candidato] ? 'text-slate-300' : 'text-slate-400'}`}>
-                  {c.partido}
-                </span>
-                <span className="text-sm font-semibold truncate w-full">{c.candidato}</span>
-              </button>
-            ))}
-          </div>
-        </section>
-
-        {/* BARRA DE BÚSQUEDA */}
+        {/* BARRA DE BÚSQUEDA FLUIDA */}
         <form onSubmit={handleSearch} className="w-full">
-          <div className="relative flex items-center bg-white border border-slate-200 rounded-2xl p-1.5 shadow-sm focus-within:ring-2 focus-within:ring-slate-900 focus-within:border-transparent transition-all">
+          <div className="relative flex flex-col sm:flex-row items-stretch sm:items-center bg-white border border-slate-200 rounded-2xl p-1.5 shadow-sm focus-within:ring-2 focus-within:ring-slate-900 focus-within:border-transparent transition-all gap-1.5 sm:gap-0">
             <input
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Buscar propuestas (ej. pensiones, seguridad, salud, impuestos...)"
-              className="w-full px-4 py-3 bg-transparent text-slate-800 placeholder-slate-400 focus:outline-none text-base"
+              placeholder="Escribe para buscar (pensiones, salud, seguridad, IVA...)"
+              className="w-full px-4 py-3 sm:py-2 bg-transparent text-slate-800 placeholder-slate-400 focus:outline-none text-sm sm:text-base order-1"
             />
             <button
               type="submit"
-              className="px-5 py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-medium rounded-xl transition-colors text-sm shadow-sm"
+              className="px-5 py-3 sm:py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-semibold rounded-xl transition-colors text-sm shadow-sm order-2 sm:order-2"
             >
-              Consultar
+              Buscar Propuestas
             </button>
           </div>
         </form>
 
-        {/* RESULTADOS DE LA CONSULTA */}
-        <section className="space-y-4 mb-12">
+        {/* CONTENEDOR DE RESULTADOS RESPONSIVOS */}
+        <section className="space-y-3 sm:space-y-4 mb-8">
           {searchResults.length > 0 ? (
             searchResults.map((result, idx) => (
               <div 
                 key={idx} 
-                className="p-5 border border-slate-200 bg-white rounded-2xl shadow-sm relative overflow-hidden group"
+                className="p-4 sm:p-5 border border-slate-200 bg-white rounded-2xl shadow-sm relative overflow-hidden flex flex-col justify-between"
               >
-                {/* Meta de Ubicación en el documento */}
-                <span className="absolute top-0 right-0 bg-slate-100 text-slate-600 text-[10px] font-mono font-bold px-3 py-1 rounded-bl-xl border-l border-b border-slate-200">
-                  DOC. OFICIAL PÁG. {result.pagina}
+                {/* Meta Ubicación: Ajustada para pantallas pequeñas */}
+                <span className="sm:absolute top-0 right-0 bg-slate-100 text-slate-600 text-[9px] font-mono font-bold px-2 py-1 rounded-md sm:rounded-none sm:rounded-bl-xl border sm:border-l sm:border-b border-slate-200 self-start sm:self-auto mb-2 sm:mb-0">
+                  DOCUMENTO OFICIAL • PÁG. {result.pagina}
                 </span>
                 
-                {/* Autor de la propuesta */}
-                <div className="mb-3 pr-24">
-                  <h3 className="text-base font-bold text-slate-900">
+                {/* Autor e información */}
+                <div className="mb-2 sm:pr-28">
+                  <h3 className="text-base font-bold text-slate-900 leading-tight">
                     {result.candidato}
                   </h3>
-                  <p className="text-xs text-slate-500 font-medium mt-0.5">
-                    {result.partido} • Enfoque: <span className="capitalize text-slate-700 font-semibold">{result.tema.replace('_', ' ')}</span>
+                  <p className="text-[11px] text-slate-500 font-medium mt-0.5">
+                    {result.partido} • Tema: <span className="capitalize text-slate-700 font-bold">{result.tema.replace('_', ' ')}</span>
                   </p>
                 </div>
                 
-                {/* Cita de propuesta */}
-                <p className="text-slate-700 text-sm md:text-base bg-slate-50 p-3.5 rounded-xl border border-slate-200/80 leading-relaxed font-normal">
+                {/* Bloque de texto responsivo */}
+                <p className="text-slate-700 text-xs sm:text-sm bg-slate-50 p-3 rounded-xl border border-slate-200/60 leading-relaxed font-normal italic">
                   "{result.texto}"
                 </p>
               </div>
             ))
           ) : (
             hasSearched && query.trim() !== '' && (
-              <div className="text-center py-10 bg-white rounded-2xl border border-slate-200 text-slate-400 text-sm">
-                ℹ️ No se detectaron entradas exactas para los criterios seleccionados. Intente simplificar la palabra clave (ej: use "salud" en lugar de "hospitales públicos").
+              <div className="text-center py-8 px-4 bg-white rounded-2xl border border-slate-200 text-slate-400 text-xs sm:text-sm">
+                ℹ️ No se encontraron coincidencias exactas para los criterios seleccionados. Intenta con un término más corto (ej. "empleo" en lugar de "generación de trabajo").
               </div>
             )
           )}
         </section>
+
+        {/* SECCIÓN TRANSPARENCIA ABAJO PARA NO QUITARLE VISIBILIDAD AL BUSCADOR */}
+        <section className="w-full bg-white border border-slate-200 p-4 sm:p-5 rounded-2xl shadow-sm">
+          <h2 className="text-xs sm:text-sm font-bold text-slate-900 mb-2.5 flex items-center gap-1.5 border-b border-slate-100 pb-2">
+            📋 Protocolo de Transparencia y Datos
+          </h2>
+          <div className="flex flex-col gap-3 text-xs text-slate-600 leading-relaxed">
+            <p>
+              Esta plataforma es gestionada de manera independiente por <strong className="text-slate-800">Sebastian Mendoza</strong>. El procesamiento, organización de temáticas y extracción de fragmentos de texto se ejecutan mediante modelos de Inteligencia Artificial controlados.
+            </p>
+            <p className="bg-amber-50 text-amber-950 p-3 rounded-xl border border-amber-200 font-medium text-[11px]">
+              ⚠️ <strong className="text-amber-900">Nota Ciudadana:</strong> A pesar de las auditorías de datos, el software puede procesar variaciones. Se invita formalmente al electorado a descargar y estudiar los PDF oficiales presentados ante el consejo electoral para la validación definitiva de su voto.
+            </p>
+          </div>
+          <div className="mt-4 pt-3 border-t border-slate-100 text-center text-[10px] text-slate-400 font-mono">
+            Informador Político v2.0 • Código Abierto Pedagógico
+          </div>
+        </section>
+
       </main>
     </div>
   );
