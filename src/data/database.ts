@@ -215,7 +215,7 @@ export const candidatos: Candidato[] = [
           { texto: "Fortalecer la enseñanza de ciencia, tecnología, arte y matemáticas en colegios.", pagina: 1 },
           { texto: "Implementar un proyecto nacional para mejorar la enseñanza de las matemáticas.", pagina: 1 },
           { texto: "Conectar la educación media, técnica y superior con el mundo laboral mediante trayectorias flexibles.", pagina: 1 },
-          { text: "Recuperar el Icetex con nuevas becas y créditos con pagos contingentes al ingreso.", pagina: 1 }
+          { texto: "Recuperar el Icetex con nuevas becas y créditos con pagos contingentes al ingreso.", pagina: 1 }
         ]
       },
       salud: {
