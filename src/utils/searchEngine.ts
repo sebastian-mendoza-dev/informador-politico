@@ -97,7 +97,6 @@ const mapaInferencias: Record<string, { temas: string[]; palabrasClave: string[]
   },
   ia: {
     temas: ['tecnologia', 'economia', 'corrupcion'],
-    temasAsociados: ['tecnologia', 'economia'],
     palabrasClave: ['inteligencia artificial', 'blockchain', 'evasión', 'dian', 'automatización', '4.0']
   },
   impuestos: {
