@@ -1,13 +1,24 @@
 import { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
-// Importamos el script de inicialización nativo
-import { inject } from '@vercel/analytics';
 
 export default function App() {
-  // Inicializamos las analíticas de forma segura una vez se monte la aplicación
   useEffect(() => {
-    inject();
+    // Inicialización nativa directa usando el objeto global de producción
+    try {
+      if (typeof window !== 'undefined') {
+        // @ts-ignore - Evita que TypeScript moleste por la propiedad va
+        if (!window.va) {
+          // @ts-ignore
+          window.va = function () {
+            // @ts-ignore
+            (window.vaq = window.vaq || []).push(arguments);
+          };
+        }
+      }
+    } catch (e) {
+      console.error("Error cargando analíticas:", e);
+    }
   }, []);
 
   return (
