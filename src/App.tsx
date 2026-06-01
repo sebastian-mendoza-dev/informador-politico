@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
-// Importamos el rastreador oficial de Vercel
-import { Analytics } from '@vercel/analytics/react';
+// Cambiamos la ruta de importación a la raíz del paquete para resolver el error de tipado
+import { Analytics } from '@vercel/analytics';
 
 export default function App() {
   return (
@@ -13,9 +13,7 @@ export default function App() {
         </Routes>
       </div>
       
-      {/* Inyectamos el componente de analíticas de Vercel.
-        Mide visitas y rendimiento de forma automática y transparente.
-      */}
+      {/* Inyectamos el componente de analíticas de Vercel. */}
       <Analytics />
     </Router>
   );
