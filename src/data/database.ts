@@ -169,7 +169,7 @@ export const candidatos: Candidato[] = [
       infraestructura: {
         resumen: "Inversión masiva en infraestructura rural y conectividad territorial para dinamizar el campo. Se plantea la ejecución directa de las obras mediante contratación transparente con organizaciones populares y juntas de acción comunal.",
         propuestas: [
-          { texto: "Crear and ejecutar el Plan Nacional de Construcción de Vías Terciarias para conectar los productos agrícolas y agropecuarios con los mercados.", pagina: 9 },
+          { texto: "Crear y ejecutar el Plan Nacional de Construcción de Vías Terciarias para conectar los productos agrícolas y agropecuarios con los mercados.", pagina: 9 },
           { texto: "Implementar un régimen contractual simplificado, pedagógico y comunitario que permita a las juntas de acción comunal y organizaciones populares pavimentar sus calles y ejecutar obras sin trabas tributarias corporativas.", pagina: 8 }
         ]
       },

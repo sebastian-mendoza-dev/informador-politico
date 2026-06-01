@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { candidatos, Candidato } from '../data/database';
 import { searchProposals, SearchResult } from '../utils/searchEngine';
 
-// Icono del Cóndor de los Andes (SVG institucional neutro)
 const CondorIcon = () => (
   <svg width="28" height="28" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M50 10C35 10 15 25 10 45C5 65 15 80 15 80L25 65L50 90L75 65L85 80C85 80 95 65 90 45C85 25 65 10 50 10Z" fill="#1C2B39"/>
@@ -30,15 +29,7 @@ export default function Home() {
       return selectedCandidates[result.candidato];
     });
     
-    // CORRECCIÓN DE ERROR EN BASE DE DATOS (Solución temporal en interfaz)
-    const correctedResults = filtered.map(r => {
-      if (r.candidato === "Iván Cepeda Castro" && r.texto.includes("Crear and ejecutar")) {
-        return { ...r, texto: r.texto.replace("Crear and ejecutar", "Crear y ejecutar") };
-      }
-      return r;
-    });
-    
-    setSearchResults(correctedResults);
+    setSearchResults(filtered);
   };
 
   const handleSearchSubmit = (e: React.FormEvent) => {
@@ -63,14 +54,12 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-[#F4F6F8] text-[#1C2B39] flex flex-col items-center justify-start antialiased font-sans">
       
-      {/* CINTA SUPERIOR TRICOLOR (Estilo Gobierno) */}
       <div className="w-full h-1.5 flex">
         <div className="w-1/3 bg-[#FCD116]"></div>
         <div className="w-1/3 bg-[#003893]"></div>
         <div className="w-1/3 bg-[#CE1126]"></div>
       </div>
 
-      {/* ENCABEZADO INSTITUCIONAL */}
       <header className="w-full max-w-7xl mx-auto flex items-center justify-between px-6 py-5 border-b border-gray-200 bg-white shadow-sm mb-10">
         <div className="flex items-center gap-3">
           <CondorIcon />
@@ -79,35 +68,29 @@ export default function Home() {
           </h1>
         </div>
         <nav className="flex items-center gap-4 text-sm font-medium text-gray-600">
-          <a href="#" className="hover:text-[#003893]">Buscador</a>
-          <a href="#" className="hover:text-[#003893]">Comparar</a>
-          <a href="#" className="bg-[#1C2B39] text-white px-4 py-2 rounded-full text-xs font-bold hover:bg-black">Preguntas frecuentes</a>
+          <span className="cursor-pointer text-[#003893] border-b-2 border-[#003893] pb-1">Buscador</span>
+          <span className="text-gray-300">|</span>
+          <span className="text-gray-400">Fuente Neutral de Control</span>
         </nav>
       </header>
 
-      {/* BANNER DE NEUTRALIDAD */}
       <div className="w-full max-w-5xl bg-white border border-gray-200 p-6 rounded-2xl text-sm mb-10 shadow-lg relative overflow-hidden">
-        {/* Fondo sutil de cóndor */}
-        <div className="absolute -right-10 -bottom-10 opacity-5 scale-150">
-          <CondorIcon />
-        </div>
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 relative z-10">
           <div>
-            <p className="font-bold text-[#1C2B39] text-lg mb-1 tracking-tight">⚖️ Fuente de Información Independiente</p>
-            <p className="text-gray-600">Este portal no representa a ningún partido, candidato o campaña política.</p>
+            <p className="font-bold text-[#1C2B39] text-lg mb-1 tracking-tight">⚖️ Transparencia Electoral Independiente</p>
+            <p className="text-gray-600">Iniciativa académica de control ciudadano desarrollada por <strong>Sebastian Mendoza</strong>.</p>
           </div>
           <div className="bg-[#F4F6F8] px-4 py-2 rounded-xl border border-gray-200 font-mono text-xs text-gray-700 font-medium">
-            📋 Basado estrictamente en documentos públicos oficiales.
+            📋 Datos oficiales sin modificaciones
           </div>
         </div>
         <p className="mt-4 text-gray-500 text-xs md:text-sm border-t border-gray-100 pt-4 leading-relaxed font-normal">
-          <strong className="text-gray-800 font-semibold">Nota Ciudadana:</strong> Esta plataforma utiliza tecnología de minería de datos para organizar e indexar los planes de gobierno radicados ante la Registraduría Nacional del Estado Civil. El objetivo es facilitar la consulta ciudadana. Invitamos a la validación de los textos frente a los documentos originales disponibles en las fuentes oficiales.
+          <strong className="text-gray-800 font-semibold">Garantía de Imparcialidad:</strong> Esta plataforma utiliza algoritmos de procesamiento de texto estructurado para mapear los documentos de plan de gobierno oficiales radicados por las agrupaciones políticas. El portal web no contiene juicios de valor, publicidad política pagada ni interpretaciones editoriales de las propuestas.
         </p>
       </div>
 
       <main className="w-full max-w-5xl flex-1 flex flex-col gap-8 px-4 mb-20">
 
-        {/* SELECTORES DE NAVEGACIÓN (Estilo botones grandes de referencia) */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <button
             onClick={() => { setActiveTab('segunda'); setHasSearched(false); setSearchResults([]); }}
@@ -118,7 +101,7 @@ export default function Home() {
             }`}
           >
             <span className="text-3xl">🗳️</span>
-            <span className="text-sm font-bold tracking-tight">Segunda Vuelta Presidencial 2026</span>
+            <span className="text-sm font-bold tracking-tight">Segunda Vuelta Presidencial</span>
           </button>
           <button
             onClick={() => { setActiveTab('generales'); setHasSearched(false); setSearchResults([]); }}
@@ -129,14 +112,13 @@ export default function Home() {
             }`}
           >
             <span className="text-3xl">🗂️</span>
-            <span className="text-sm font-bold tracking-tight">Registro Histórico Generales</span>
+            <span className="text-sm font-bold tracking-tight">Registro Histórico de Candidatos</span>
           </button>
         </div>
 
-        {/* FILTROS DE CANDIDATOS (Estilo tarjetas blancas limpias) */}
         <section className="w-full bg-white border border-gray-200 p-6 rounded-2xl shadow-lg">
           <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">
-            Candidatos oficiales en contienda:
+            Filtrar por Candidato Oficial:
           </label>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {(activeTab === 'segunda' ? candidatosSegunda : candidatosGenerales).map((c: Candidato) => {
@@ -165,7 +147,6 @@ export default function Home() {
           </div>
         </section>
 
-        {/* BUSCADOR RESALTADO */}
         <div className="w-full space-y-4">
           <form onSubmit={handleSearchSubmit} className="w-full">
             <div className="flex flex-col sm:flex-row bg-white border-2 border-gray-200 rounded-2xl p-2 shadow-xl focus-within:ring-4 focus-within:ring-[#003893]/10 focus-within:border-[#003893] transition-all gap-2 sm:gap-0">
@@ -173,7 +154,7 @@ export default function Home() {
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Escribe un concepto de control ciudadano (ej: pensiones, seguridad, campo...)"
+                placeholder="Busca un concepto político general (ej: pensiones, seguridad, campo...)"
                 className="w-full px-5 py-4 bg-transparent text-[#1C2B39] placeholder-gray-400 focus:outline-none text-base md:text-lg font-medium"
               />
               <button
@@ -185,7 +166,6 @@ export default function Home() {
             </div>
           </form>
 
-          {/* ETIQUETAS RÁPIDAS (Sutiles y neutras) */}
           <div className="flex flex-wrap items-center gap-2 px-1">
             <span className="text-xs text-gray-400 font-medium mr-1 uppercase tracking-wider">Conceptos sugeridos:</span>
             {sugerencias.map((tag) => (
@@ -201,7 +181,6 @@ export default function Home() {
           </div>
         </div>
 
-        {/* TARJETAS DE RESULTADO INSTITUCIONALES */}
         <section className="space-y-6 mb-20">
           {hasSearched && (
             <div className="text-sm text-gray-600 font-medium tracking-tight px-1 flex items-center gap-2">
@@ -230,16 +209,15 @@ export default function Home() {
           ) : (
             hasSearched && query.trim() !== '' && (
               <div className="text-center py-16 bg-white rounded-2xl border-2 border-gray-200 text-gray-500 text-base px-6 shadow-md font-medium">
-                ℹ️ No se localizaron coincidencias literales ni semánticas para el concepto ingresado bajo los filtros actuales. Intenta seleccionando un concepto sugerido o revisando los filtros de candidatos.
+                ℹ️ No se localizaron coincidencias bajo el concepto ingresado. Intenta con un término relacionado.
               </div>
             )
           )}
         </section>
       </main>
 
-      {/* PIE DE PÁGINA INSTITUCIONAL */}
-      <footer className="w-full bg-[#1C2B39] text-gray-400 text-xs py-5 px-6 text-center font-medium border-t border-black">
-        Plataforma independiente de consulta ciudadana. Información basada estrictamente en documentos públicos oficiales. 2026.
+      <footer className="w-full bg-[#1C2B39] text-gray-400 text-xs py-6 px-6 text-center font-medium border-t border-black mt-auto">
+        Plataforma académica e independiente de consulta ciudadana. Información oficial basada en los planes de gobierno vigentes. 2026.
       </footer>
 
     </div>
