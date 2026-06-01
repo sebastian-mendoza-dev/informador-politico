@@ -2,6 +2,14 @@ import { useState } from 'react';
 import { candidatos, Candidato } from '../data/database';
 import { searchProposals, SearchResult } from '../utils/searchEngine';
 
+// Icono del Cóndor de los Andes (SVG institucional neutro)
+const CondorIcon = () => (
+  <svg width="28" height="28" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M50 10C35 10 15 25 10 45C5 65 15 80 15 80L25 65L50 90L75 65L85 80C85 80 95 65 90 45C85 25 65 10 50 10Z" fill="#1C2B39"/>
+    <path d="M50 25C40 25 30 35 30 35C30 35 25 45 30 55C35 65 50 70 50 70C50 70 65 65 70 55C75 45 70 35 70 35C70 35 60 25 50 25Z" fill="#F4F6F8"/>
+  </svg>
+);
+
 export default function Home() {
   const [query, setQuery] = useState('');
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
@@ -22,7 +30,15 @@ export default function Home() {
       return selectedCandidates[result.candidato];
     });
     
-    setSearchResults(filtered);
+    // CORRECCIÓN DE ERROR EN BASE DE DATOS (Solución temporal en interfaz)
+    const correctedResults = filtered.map(r => {
+      if (r.candidato === "Iván Cepeda Castro" && r.texto.includes("Crear and ejecutar")) {
+        return { ...r, texto: r.texto.replace("Crear and ejecutar", "Crear y ejecutar") };
+      }
+      return r;
+    });
+    
+    setSearchResults(correctedResults);
   };
 
   const handleSearchSubmit = (e: React.FormEvent) => {
@@ -42,70 +58,87 @@ export default function Home() {
   const candidatosSegunda = candidatos.filter((c: Candidato) => c.fase === 'segunda_vuelta');
   const candidatosGenerales = candidatos;
 
-  // Sugerencias rápidas para el usuario
   const sugerencias = ['Pensiones', 'Trabajo', 'Seguridad', 'EPS', 'Universidad', 'Campo', 'IA', 'Vías'];
 
   return (
-    <div className="min-h-screen bg-stone-100 text-stone-800 flex flex-col items-center justify-start px-4 py-6 md:py-12 font-sans tracking-normal antialiased selection:bg-stone-200">
+    <div className="min-h-screen bg-[#F4F6F8] text-[#1C2B39] flex flex-col items-center justify-start antialiased font-sans">
       
-      {/* BANNER INFORMATIVO NEUTRO DE CONTROL */}
-      <div className="w-full max-w-4xl bg-stone-900 text-stone-100 p-5 rounded-xl text-xs md:text-sm mb-8 shadow-sm border border-stone-800">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
-          <div>
-            <p className="font-semibold text-stone-100 text-sm mb-0.5 tracking-tight">⚖️ Transparencia Electoral Independiente</p>
-            <p className="text-stone-400">Iniciativa académica estructurada de forma autónoma por <strong>Sebastian Mendoza</strong>.</p>
-          </div>
-          <div className="bg-stone-800 px-3 py-1.5 rounded-lg border border-stone-700 font-mono text-[11px] text-stone-300">
-            📊 Datos indexados sin edición
-          </div>
-        </div>
-        <p className="mt-3 text-stone-400 text-[11px] md:text-xs border-t border-stone-800 pt-2.5 leading-relaxed font-normal">
-          <strong className="text-stone-200 font-medium">Cláusula de imparcialidad:</strong> Esta plataforma web utiliza minería de datos estructurada para mapear los planes de gobierno oficiales radicados ante los organismos competentes. No emite juicios ponderados, publicidad ni sesgos de opinión. Se sugiere validar el texto frente a la documentación oficial.
-        </p>
+      {/* CINTA SUPERIOR TRICOLOR (Estilo Gobierno) */}
+      <div className="w-full h-1.5 flex">
+        <div className="w-1/3 bg-[#FCD116]"></div>
+        <div className="w-1/3 bg-[#003893]"></div>
+        <div className="w-1/3 bg-[#CE1126]"></div>
       </div>
 
-      {/* ENCABEZADO CON FUENTE LIMPIA */}
-      <header className="w-full max-w-2xl text-center mb-8">
-        <h1 className="text-3xl md:text-4xl font-black tracking-tight text-stone-900 mb-2">
-          INFORMADOR POLÍTICO
-        </h1>
-        <p className="text-stone-500 text-xs md:text-sm font-medium uppercase tracking-widest">
-          Buscador de Propuestas Presidenciales Oficiales
-        </p>
+      {/* ENCABEZADO INSTITUCIONAL */}
+      <header className="w-full max-w-7xl mx-auto flex items-center justify-between px-6 py-5 border-b border-gray-200 bg-white shadow-sm mb-10">
+        <div className="flex items-center gap-3">
+          <CondorIcon />
+          <h1 className="text-xl md:text-2xl font-black text-[#1C2B39] tracking-tighter">
+            INFORMADOR POLÍTICO <span className="font-light text-gray-400">COLOMBIA</span>
+          </h1>
+        </div>
+        <nav className="flex items-center gap-4 text-sm font-medium text-gray-600">
+          <a href="#" className="hover:text-[#003893]">Buscador</a>
+          <a href="#" className="hover:text-[#003893]">Comparar</a>
+          <a href="#" className="bg-[#1C2B39] text-white px-4 py-2 rounded-full text-xs font-bold hover:bg-black">Preguntas frecuentes</a>
+        </nav>
       </header>
 
-      {/* TABS DE NAVEGACIÓN EN TONOS PIEDRA NEUTROS */}
-      <div className="w-full max-w-3xl bg-stone-200/60 border border-stone-300/40 p-1 rounded-xl shadow-inner flex mb-6">
-        <button
-          onClick={() => { setActiveTab('segunda'); setHasSearched(false); setSearchResults([]); }}
-          className={`w-1/2 py-3 rounded-lg text-xs md:text-sm font-bold transition-all text-center tracking-tight ${
-            activeTab === 'segunda'
-              ? 'bg-stone-900 text-white shadow-sm'
-              : 'text-stone-600 hover:text-stone-900'
-          }`}
-        >
-          🗳️ Segunda Vuelta Presidencial
-        </button>
-        <button
-          onClick={() => { setActiveTab('generales'); setHasSearched(false); setSearchResults([]); }}
-          className={`w-1/2 py-3 rounded-lg text-xs md:text-sm font-bold transition-all text-center tracking-tight ${
-            activeTab === 'generales'
-              ? 'bg-stone-900 text-white shadow-sm'
-              : 'text-stone-600 hover:text-stone-900'
-          }`}
-        >
-          🗂️ Registro General Histórico
-        </button>
+      {/* BANNER DE NEUTRALIDAD */}
+      <div className="w-full max-w-5xl bg-white border border-gray-200 p-6 rounded-2xl text-sm mb-10 shadow-lg relative overflow-hidden">
+        {/* Fondo sutil de cóndor */}
+        <div className="absolute -right-10 -bottom-10 opacity-5 scale-150">
+          <CondorIcon />
+        </div>
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 relative z-10">
+          <div>
+            <p className="font-bold text-[#1C2B39] text-lg mb-1 tracking-tight">⚖️ Fuente de Información Independiente</p>
+            <p className="text-gray-600">Este portal no representa a ningún partido, candidato o campaña política.</p>
+          </div>
+          <div className="bg-[#F4F6F8] px-4 py-2 rounded-xl border border-gray-200 font-mono text-xs text-gray-700 font-medium">
+            📋 Basado estrictamente en documentos públicos oficiales.
+          </div>
+        </div>
+        <p className="mt-4 text-gray-500 text-xs md:text-sm border-t border-gray-100 pt-4 leading-relaxed font-normal">
+          <strong className="text-gray-800 font-semibold">Nota Ciudadana:</strong> Esta plataforma utiliza tecnología de minería de datos para organizar e indexar los planes de gobierno radicados ante la Registraduría Nacional del Estado Civil. El objetivo es facilitar la consulta ciudadana. Invitamos a la validación de los textos frente a los documentos originales disponibles en las fuentes oficiales.
+        </p>
       </div>
 
-      <main className="w-full max-w-3xl flex-1 flex flex-col gap-6">
+      <main className="w-full max-w-5xl flex-1 flex flex-col gap-8 px-4 mb-20">
 
-        {/* CONTENEDOR DE FILTROS POR CANDIDATO */}
-        <section className="w-full bg-white border border-stone-200 p-4 md:p-5 rounded-xl shadow-sm">
-          <label className="block text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-3">
-            {activeTab === 'segunda' ? 'Candidatos en contienda final:' : 'Selecciona los candidatos a incluir en la consulta:'}
+        {/* SELECTORES DE NAVEGACIÓN (Estilo botones grandes de referencia) */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <button
+            onClick={() => { setActiveTab('segunda'); setHasSearched(false); setSearchResults([]); }}
+            className={`p-6 rounded-2xl text-center border-2 transition-all flex flex-col items-center justify-center gap-2 ${
+              activeTab === 'segunda'
+                ? 'bg-[#1C2B39] text-white shadow-xl border-[#1C2B39]'
+                : 'bg-white text-gray-600 hover:border-gray-300 border-gray-200 shadow-md'
+            }`}
+          >
+            <span className="text-3xl">🗳️</span>
+            <span className="text-sm font-bold tracking-tight">Segunda Vuelta Presidencial 2026</span>
+          </button>
+          <button
+            onClick={() => { setActiveTab('generales'); setHasSearched(false); setSearchResults([]); }}
+            className={`p-6 rounded-2xl text-center border-2 transition-all flex flex-col items-center justify-center gap-2 ${
+              activeTab === 'generales'
+                ? 'bg-[#1C2B39] text-white shadow-xl border-[#1C2B39]'
+                : 'bg-white text-gray-600 hover:border-gray-300 border-gray-200 shadow-md'
+            }`}
+          >
+            <span className="text-3xl">🗂️</span>
+            <span className="text-sm font-bold tracking-tight">Registro Histórico Generales</span>
+          </button>
+        </div>
+
+        {/* FILTROS DE CANDIDATOS (Estilo tarjetas blancas limpias) */}
+        <section className="w-full bg-white border border-gray-200 p-6 rounded-2xl shadow-lg">
+          <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">
+            Candidatos oficiales en contienda:
           </label>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {(activeTab === 'segunda' ? candidatosSegunda : candidatosGenerales).map((c: Candidato) => {
               const isSelected = selectedCandidates[c.candidato];
               return (
@@ -113,49 +146,54 @@ export default function Home() {
                   key={c.candidato}
                   type="button"
                   onClick={() => toggleCandidate(c.candidato)}
-                  className={`p-3 rounded-lg border text-left flex flex-col justify-between transition-all ${
+                  className={`p-5 rounded-xl border-2 text-left flex items-center justify-between transition-all gap-4 ${
                     isSelected && (activeTab !== 'segunda' || c.fase === 'segunda_vuelta')
-                      ? 'bg-stone-800 border-stone-800 text-white shadow-sm'
-                      : 'bg-stone-50 border-stone-200 text-stone-400 hover:border-stone-300'
+                      ? 'bg-white border-[#003893] shadow-md'
+                      : 'bg-[#F4F6F8] border-gray-200 text-gray-400 hover:border-gray-300'
                   }`}
                 >
-                  <span className="text-[9px] font-bold uppercase tracking-wider opacity-60">{c.partido}</span>
-                  <span className="text-sm font-bold tracking-tight truncate w-full mt-0.5">{c.candidato}</span>
+                  <div>
+                    <span className={`text-[10px] font-bold uppercase tracking-wider ${isSelected ? 'text-[#003893]' : 'text-gray-500'}`}>{c.partido}</span>
+                    <span className={`block text-lg font-black tracking-tighter truncate w-full mt-0.5 ${isSelected ? 'text-[#1C2B39]' : 'text-gray-600'}`}>{c.candidato}</span>
+                  </div>
+                  <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center text-xs font-bold ${isSelected ? 'bg-[#003893] text-white border-[#003893]' : 'border-gray-300'}`}>
+                    {isSelected ? '✓' : ''}
+                  </div>
                 </button>
               );
             })}
           </div>
         </section>
 
-        {/* INPUT DE BÚSQUEDA MINIMALISTA Y TEMAS DE INTERÉS */}
-        <div className="w-full space-y-3">
+        {/* BUSCADOR RESALTADO */}
+        <div className="w-full space-y-4">
           <form onSubmit={handleSearchSubmit} className="w-full">
-            <div className="flex flex-col sm:flex-row bg-white border border-stone-200 rounded-xl p-1.5 shadow-sm focus-within:ring-2 focus-within:ring-stone-900 focus-within:border-stone-900 transition-all gap-2 sm:gap-0">
+            <div className="flex flex-col sm:flex-row bg-white border-2 border-gray-200 rounded-2xl p-2 shadow-xl focus-within:ring-4 focus-within:ring-[#003893]/10 focus-within:border-[#003893] transition-all gap-2 sm:gap-0">
               <input
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Busca conceptos generales políticos (ej: pensiones, fuerza pública, campo...)"
-                className="w-full px-4 py-3 bg-transparent text-stone-900 placeholder-stone-400 focus:outline-none text-sm md:text-base font-normal"
+                placeholder="Escribe un concepto de control ciudadano (ej: pensiones, seguridad, campo...)"
+                className="w-full px-5 py-4 bg-transparent text-[#1C2B39] placeholder-gray-400 focus:outline-none text-base md:text-lg font-medium"
               />
               <button
                 type="submit"
-                className="px-6 py-3 bg-stone-900 hover:bg-stone-800 text-white font-bold rounded-lg transition-colors text-sm tracking-tight shadow-sm whitespace-nowrap"
+                className="px-8 py-4 bg-[#1C2B39] hover:bg-black text-white font-bold rounded-xl transition-colors text-base tracking-tight shadow-md whitespace-nowrap"
               >
-                Buscar Datos
+                Buscar Datos Oficiales
               </button>
             </div>
           </form>
 
-          {/* ETIQUETAS DE ACCESO RÁPIDO */}
-          <div className="flex flex-wrap items-center gap-1.5 px-1">
-            <span className="text-[11px] text-stone-400 font-medium mr-1 uppercase tracking-wider">Sugeridos:</span>
+          {/* ETIQUETAS RÁPIDAS (Sutiles y neutras) */}
+          <div className="flex flex-wrap items-center gap-2 px-1">
+            <span className="text-xs text-gray-400 font-medium mr-1 uppercase tracking-wider">Conceptos sugeridos:</span>
             {sugerencias.map((tag) => (
               <button
                 key={tag}
                 type="button"
                 onClick={() => handleTagClick(tag)}
-                className="bg-stone-200/50 hover:bg-stone-200 text-stone-700 text-xs px-2.5 py-1 rounded-md border border-stone-300/30 transition-colors font-medium"
+                className="bg-white hover:bg-gray-100 text-gray-700 text-xs px-3 py-1.5 rounded-full border border-gray-200 transition-colors font-medium shadow-sm"
               >
                 {tag}
               </button>
@@ -163,40 +201,47 @@ export default function Home() {
           </div>
         </div>
 
-        {/* TARJETAS DE RESULTADO COMPLETAMENTE CORREGIDAS EN VISIBILIDAD */}
-        <section className="space-y-4 mb-12">
+        {/* TARJETAS DE RESULTADO INSTITUCIONALES */}
+        <section className="space-y-6 mb-20">
           {hasSearched && (
-            <div className="text-xs text-stone-500 font-mono tracking-tight px-1">
+            <div className="text-sm text-gray-600 font-medium tracking-tight px-1 flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-[#CE1126]"></span>
               Resultados obtenidos: {searchResults.length} coincidencia(s).
             </div>
           )}
 
           {searchResults.length > 0 ? (
             searchResults.map((result, idx) => (
-              <div key={idx} className="p-5 border border-stone-200 bg-white rounded-xl shadow-sm relative flex flex-col justify-between transition-all hover:border-stone-300">
-                <span className="sm:absolute top-0 right-0 bg-stone-100 text-stone-600 text-[10px] font-mono font-bold px-2.5 py-1 rounded border-b border-l border-stone-200 self-start sm:self-auto mb-2 sm:mb-0">
+              <div key={idx} className="p-6 border border-gray-200 bg-white rounded-2xl shadow-lg relative flex flex-col justify-between transition-all hover:shadow-2xl">
+                <span className="sm:absolute top-0 right-0 bg-[#F4F6F8] text-gray-700 text-[11px] font-mono font-bold px-3 py-1.5 rounded-bl-xl rounded-tr-2xl border-b border-l border-gray-200 self-start sm:self-auto mb-3 sm:mb-0">
                   REPORTE CONTROL: PÁG. {result.pagina}
                 </span>
-                <div className="mb-3 pr-24">
-                  <h3 className="text-base font-black text-stone-900 tracking-tight">{result.candidato}</h3>
-                  <p className="text-xs text-stone-500 font-medium mt-0.5 uppercase tracking-wider">
-                    {result.partido} • Eje: <span className="text-stone-800 font-bold">{result.tema.replace('_', ' ')}</span>
+                <div className="mb-4 pr-28">
+                  <h3 className="text-xl font-black text-[#1C2B39] tracking-tighter">{result.candidato}</h3>
+                  <p className="text-xs text-gray-500 font-medium mt-1 uppercase tracking-wider">
+                    {result.partido} • Tema: <span className="text-[#003893] font-bold">{result.tema.replace('_', ' ')}</span>
                   </p>
                 </div>
-                <p className="text-stone-800 text-sm bg-stone-50/80 p-4 rounded-lg border border-stone-150 leading-relaxed font-normal">
+                <p className="text-gray-800 text-base bg-[#F4F6F8] p-5 rounded-xl border border-gray-100 leading-relaxed font-normal">
                   "{result.texto}"
                 </p>
               </div>
             ))
           ) : (
             hasSearched && query.trim() !== '' && (
-              <div className="text-center py-12 bg-white rounded-xl border border-stone-200 text-stone-400 text-sm px-4 font-normal">
-                ℹ️ No se localizaron coincidencias literales ni semánticas para el término ingresado bajo los filtros actuales. Intenta seleccionando una etiqueta sugerida.
+              <div className="text-center py-16 bg-white rounded-2xl border-2 border-gray-200 text-gray-500 text-base px-6 shadow-md font-medium">
+                ℹ️ No se localizaron coincidencias literales ni semánticas para el concepto ingresado bajo los filtros actuales. Intenta seleccionando un concepto sugerido o revisando los filtros de candidatos.
               </div>
             )
           )}
         </section>
       </main>
+
+      {/* PIE DE PÁGINA INSTITUCIONAL */}
+      <footer className="w-full bg-[#1C2B39] text-gray-400 text-xs py-5 px-6 text-center font-medium border-t border-black">
+        Plataforma independiente de consulta ciudadana. Información basada estrictamente en documentos públicos oficiales. 2026.
+      </footer>
+
     </div>
   );
 }
