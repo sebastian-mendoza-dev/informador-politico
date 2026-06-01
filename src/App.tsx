@@ -1,9 +1,15 @@
+import { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
-// Cambiamos la ruta de importación a la raíz del paquete para resolver el error de tipado
-import { Analytics } from '@vercel/analytics';
+// Importamos el script de inicialización nativo
+import { inject } from '@vercel/analytics';
 
 export default function App() {
+  // Inicializamos las analíticas de forma segura una vez se monte la aplicación
+  useEffect(() => {
+    inject();
+  }, []);
+
   return (
     <Router>
       {/* Contenedor raíz totalmente limpio, institucional y gris neutro */}
@@ -12,9 +18,6 @@ export default function App() {
           <Route path="/" element={<Home />} />
         </Routes>
       </div>
-      
-      {/* Inyectamos el componente de analíticas de Vercel. */}
-      <Analytics />
     </Router>
   );
 }
